@@ -1,4 +1,15 @@
 general:
+  public_flag:
+    Name:       "public_flag"
+    Caption:    "Authority to View Community"
+    FormType:   "radio"
+    ValueType:  "string"
+    IsUnique:   false
+    IsRequired: true
+    Default:    "public"
+    Choices:
+      public:   "Only SNS members can view"
+      open:     "Everyone can view"
   register_poricy:
     Name:       "register_poricy"
     Caption:    "Register poricy"
