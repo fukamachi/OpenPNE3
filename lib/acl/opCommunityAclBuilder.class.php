@@ -20,14 +20,19 @@ class opCommunityAclBuilder extends opAclBuilder
   static protected
     $resource = array();
 
+  static public function clearCache()
+  {
+    self::$resource = array();
+  }
+
   static public function getAcl()
   {
     $acl = new Zend_Acl();
     $acl->addRole(new Zend_Acl_Role('alien'));
     $acl->addRole(new Zend_Acl_Role('guest'), 'alien');
     $acl->addRole(new Zend_Acl_Role('member'), 'guest');
-    $acl->addRole(new Zend_Acl_Role('subadmin'),  'member');
-    $acl->addRole(new Zend_Acl_Role('admin'),  'subadmin');
+    $acl->addRole(new Zend_Acl_Role('subadmin'), 'member');
+    $acl->addRole(new Zend_Acl_Role('admin'), 'subadmin');
 
     $acl->allow('subadmin', null, 'edit');
     $acl->allow('subadmin', null, 'delete');
@@ -48,9 +53,15 @@ class opCommunityAclBuilder extends opAclBuilder
     {
       $acl->allow('guest', null, 'view');
     }
-    else
+    else if ('open' === $resource->getConfig('public_flag'))
     {
       $acl->allow('alien', null, 'view');
+    }
+    else
+    {
+      $event = new sfEvent(sfContext::getInstance(), 'op_acl.unknown_community_public_flag', array('public_flag' => $resource->getConfig('public_flag')));
+      sfContext::getInstance()->getEventDispatcher()->filter($event, $acl);
+      $acl = $event->getReturnValue();
     }
 
     foreach ($targetMembers as $member)
