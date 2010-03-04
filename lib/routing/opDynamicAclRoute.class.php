@@ -29,7 +29,12 @@ class opDynamicAclRoute extends sfDoctrineRoute
   {
     $result = parent::getObject();
 
-    if (!$this->acl->isAllowed($this->getCurrentMemberId(), null, $this->options['privilege']))
+    if (!$role = $this->getCurrentMemberId())
+    {
+      $role = 'alien';
+    }
+
+    if (!$this->acl->isAllowed($role, null, $this->options['privilege']))
     {
       throw new sfError404Exception('You are not allowed access to this resource.');
     }
