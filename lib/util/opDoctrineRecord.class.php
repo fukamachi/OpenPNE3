@@ -181,5 +181,7 @@ abstract class opDoctrineRecord extends sfDoctrineRecord implements Zend_Acl_Res
     {
       $this->addListener(new opApplicationLevelCascadingListener());
     }
+
+    $this->addListener(new opDoctrineEventNotifier());
   }
 }
